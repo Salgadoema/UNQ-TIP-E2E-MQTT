@@ -1,0 +1,57 @@
+/*
+ * hih_5031_sensor.c
+ *
+ *  Created on: 21 ago. 2022
+ *      Author: esalgado
+ */
+
+
+/* --------------------------------- Notes --------------------------------- */
+/* ----------------------------- Include files ----------------------------- */
+#include "hih_5031_sensor.h"
+/* ---------------------------- Global functions --------------------------- */
+float relativeHumidity =0.01f;
+//float temperature = 0.01f;
+float cuentasRH, vOutRH;
+float trueRH=0.0f;
+bool hih_5031_sensor_readHumidity(ADC_HandleTypeDef *pHandle, int8_t *humidity)
+{
+  uint32_t counts;
+
+  if (HAL_OK == HAL_ADC_Start(pHandle))
+  {
+    if (HAL_OK == HAL_ADC_PollForConversion(pHandle, 10))
+    {
+      counts = HAL_ADC_GetValue(pHandle);
+
+      //if (humidity)
+
+	trueRH= counts/(1.0546-(0.00216*21));
+	vOutRH=trueRH*2.0f/4095;
+	relativeHumidity=(float)(((vOutRH-0.5f)/0.02f));
+
+      {
+    	 //VOUT=(VSUPPLY)(0.00636(sensor RH) + 0.1515)
+		sensorRh= ((vout/vsuppy)-0.1515)/0.00636
+
+    	  //TRUE RH= (Sensor RH)/(1.0546 0.00216T),
+    	  /*trueRH= counts/(1.0546-(0.00216*20));
+    	  	vOutRH=trueRH*2.0f/4095;
+    	  	*humidity=(float)(((vOutRH-0.5f)/0.02f));*/
+
+    	  //*humidity= (((((counts/(1.0546-(0.00216*14)))*2.0f)/4095)-0.5f)/0.02f);
+
+    	  //x = -b/m + (1/zm)y
+    	 // *humidity=(-0.1515/0.00636)+((1/(3.3/0.00636)))*((counts/4095)*3.3);
+
+    	 *humidity=  2.2;
+      }
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/* ------------------------------ End of file ------------------------------ */

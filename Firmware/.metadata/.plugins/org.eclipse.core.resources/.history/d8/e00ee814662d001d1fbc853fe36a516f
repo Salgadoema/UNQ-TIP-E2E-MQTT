@@ -1,0 +1,38 @@
+/*
+ * hih_5031_sensor.c
+ *
+ *  Created on: 21 ago. 2022
+ *      Author: esalgado
+ */
+
+
+/* --------------------------------- Notes --------------------------------- */
+/* ----------------------------- Include files ----------------------------- */
+#include "hih_5031_sensor.h"
+/* ---------------------------- Global functions --------------------------- */
+float relativeHumidity =0.01f;
+//float temperature = 0.01f;
+float cuentasRH, vOutRH;
+float trueRH=0.0f;
+bool hih_5031_sensor_readHumidity(ADC_HandleTypeDef *pHandle, uint8_t *humidity)
+{
+  uint32_t counts;
+
+  if (HAL_OK == HAL_ADC_Start(pHandle))
+  {
+    if (HAL_OK == HAL_ADC_PollForConversion(pHandle, 10))
+    {
+      counts = HAL_ADC_GetValue(pHandle);
+
+
+    	 *humidity=  counts/4095*100;
+      }
+
+      return true;
+    }
+
+
+  return false;
+}
+
+/* ------------------------------ End of file ------------------------------ */

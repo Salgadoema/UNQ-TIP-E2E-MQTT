@@ -1,0 +1,45 @@
+/*
+ * hih_5031_sensor.c
+ *
+ *  Created on: 21 ago. 2022
+ *      Author: esalgado
+ */
+
+
+/* --------------------------------- Notes --------------------------------- */
+/* ----------------------------- Include files ----------------------------- */
+#include "hih_5031_sensor.h"
+/* ---------------------------- Global functions --------------------------- */
+bool hih_5031_sensor_readHumidity(ADC_HandleTypeDef *pHandle, int8_t *humidity)
+{
+  uint32_t counts;
+
+  if (HAL_OK == HAL_ADC_Start(pHandle))
+  {
+    if (HAL_OK == HAL_ADC_PollForConversion(pHandle, 10))
+    {
+      counts = HAL_ADC_GetValue(pHandle);
+
+      if (humidity)
+      {
+    	 //VOUT=(VSUPPLY)(0.00636(sensor RH) + 0.1515)
+  //RH=((counts/VSUPPLY)-0.1515)/0.00636
+
+    	  trueRH= ADCCount/(1.0546-(0.00216*temperature));
+    	  *humidity= ((((counts/(1.056-(0.00216*25)))*2.0f/4095)-0.5f)/0.02f);
+    	 // 	vOutRH=trueRH*2.0f/4095;
+    	  	//relativeHumidity=(float)(((vOutRH-0.5f)/0.02f));
+
+    	  //*humidity=((((counts/4095))/3.3)-0.1515)/0.00636;
+       // *humidity = (counts * 100) / 4095;
+
+      }
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/* ------------------------------ End of file ------------------------------ */
